@@ -1,0 +1,30 @@
+{
+    "name": "sheet-music-generator",
+    "version": "0.0.1a",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start":  "node node_modules/webpack-dev-server/bin/webpack-dev-server --content-base app"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/tiddle/sheet-music-generator.git"
+    },
+    "author": "Carlo Cruz <me@carlocruz.com>",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/tiddle/sheet-music-generator/issues"
+    },
+    "homepage": "https://github.com/tiddle/sheet-music-generator#readme",
+    "dependencies": {
+        "angular": "^1.4.7"
+    },
+    "devDependencies": {
+        "babel": "^6.0.15",
+        "jshint": "^2.8.0",
+        "webpack": "^1.12.3",
+        "webpack-core": "^0.6.8",
+        "webpack-dev-server": "^1.12.1"
+    }
+}

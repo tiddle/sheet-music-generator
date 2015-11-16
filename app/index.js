@@ -1,4 +1,10 @@
 var angular = require('angular');
-var ngModule = angular.module('smg', []);
+require('firebase');
+require('angularfire');
+var ngModule = angular
+    .module('smg', [
+        'smg.datasource',
+    ]);
 
 require('./notes')(ngModule);
+require('./datasource')(ngModule);

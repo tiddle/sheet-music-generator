@@ -20,7 +20,7 @@ module.exports = function (ngModule) {
             })
         }
 
-        createUser('me@carlocruz.com', 'foobar');
+        createUser('test@email.com', 'foobar');
 
         return Service;
     });

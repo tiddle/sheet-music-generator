@@ -1,6 +1,5 @@
 module.exports = function (ngModule) {
     ngModule.factory('DataSource', function ($firebaseObject) {
-
         var connection;
         var url = 'https://boiling-fire-6401.firebaseio.com';
         var Service = {
@@ -9,11 +8,21 @@ module.exports = function (ngModule) {
 
         function createConnection() {
             connection = new Firebase(url)
-            console.log($firebaseObject(connection));
+            return connection;
         }
 
-        createConnection()
-        console.log('in here');
+        function testEntry() {
+            var connection = createConnection();
+
+            var p = $firebaseObject(connection);
+            p.foo = 'bar';
+            p.$save().then(function(ref) {
+                console.log(ref);
+            })
+        }
+
+
+        testEntry();
         return Service;
     });
 };

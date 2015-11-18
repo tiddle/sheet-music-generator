@@ -21,8 +21,6 @@ module.exports = function (ngModule) {
             })
         }
 
-
-        testEntry();
         return Service;
     });
 };

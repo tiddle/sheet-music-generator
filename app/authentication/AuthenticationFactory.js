@@ -2,7 +2,8 @@ module.exports = function (ngModule) {
     ngModule.factory('Authentication', function (DataSource) {
         console.log('in here');
         var Service = {
-            createUser: createUser
+            createUser: createUser,
+            login: login
         };
 
         function createUser(email, password) {
@@ -20,7 +21,20 @@ module.exports = function (ngModule) {
             })
         }
 
-        createUser('test@email.com', 'foobar');
+        function login(email, password) {
+            var ref = DataSource.createConnection();
+            ref.authWithPassword({
+                email: email,
+                password: password
+            }, function(error, authData) {
+                if(error) {
+                    console.log(error);
+                } else {
+                    console.log('in here', authData);
+                    return authData;
+                }
+            })
+        }
 
         return Service;
     });

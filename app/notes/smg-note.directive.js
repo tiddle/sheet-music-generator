@@ -2,7 +2,7 @@
  * Created by Carlo on 09/11/15.
  */
 module.exports = function (ngModule) {
-    ngModule.directive('smgNote', function (DataSource) {
+    ngModule.directive('smgNote', function (Authentication) {
     return {
         restrict: 'E',
         scope: {},
@@ -11,7 +11,7 @@ module.exports = function (ngModule) {
         controllerAs: 'vm',
         controller: function() {
             var vm = this;
-            console.log(DataSource);
+            console.log(Authentication);
             vm.greeting = 'In Here......... weeeeeeeeeeeeeeeeee!';
         }
     }

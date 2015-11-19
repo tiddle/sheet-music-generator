@@ -3,11 +3,12 @@ module.exports = function (ngModule) {
         var connection;
         var url = 'https://boiling-fire-6401.firebaseio.com';
         var Service = {
-            createConnection: createConnection
+            createConnection: createConnection,
         };
 
-        function createConnection() {
-            connection = new Firebase(url)
+        function createConnection(ref) {
+            var getUrl = ref ? url + ref : url;
+            connection = new Firebase(getUrl)
             return connection;
         }
 

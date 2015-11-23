@@ -17,9 +17,6 @@ module.exports = function (ngModule) {
 
             var p = $firebaseObject(connection);
             p.foo = 'bar';
-            p.$save().then(function(ref) {
-                console.log(ref);
-            })
         }
 
         return Service;

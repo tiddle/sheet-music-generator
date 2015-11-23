@@ -9,4 +9,5 @@ var ngModule = angular
 require('./notes')(ngModule);
 require('./datasource')(ngModule);
 require('./authentication')(ngModule);
+require('./users')(ngModule);
 require('./sheets')(ngModule);

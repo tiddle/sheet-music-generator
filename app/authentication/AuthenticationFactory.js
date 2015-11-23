@@ -1,5 +1,5 @@
 module.exports = function (ngModule) {
-    ngModule.factory('Authentication', function (DataSource) {
+    ngModule.factory('Authentication', function (DataSource, $firebaseAuth) {
         console.log('in here');
         var Service = {
             createUser: createUser,
@@ -7,18 +7,12 @@ module.exports = function (ngModule) {
         };
 
         function createUser(email, password) {
-            var ref = DataSource.createConnection();
-            ref.createUser({
+            var ref = $firebaseAuth(DataSource.createConnection());
+
+            return ref.$createUser({
                 email: email,
                 password: password
-            }, function(error, userData) {
-                if(error) {
-                    return error;
-                } else {
-                    console.log(userData);
-                    return userData;
-                }
-            })
+            });
         }
 
         function login(email, password) {

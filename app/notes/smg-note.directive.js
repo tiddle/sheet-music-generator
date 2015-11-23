@@ -11,6 +11,7 @@ module.exports = function (ngModule) {
         controllerAs: 'vm',
         controller: function() {
             var vm = this;
+            console.log('in here');
             console.log(Authentication);
             vm.greeting = 'In Here......... weeeeeeeeeeeeeeeeee!';
         }

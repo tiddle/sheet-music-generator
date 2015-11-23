@@ -2,7 +2,7 @@
  * Created by Carlo on 09/11/15.
  */
 module.exports = function (ngModule) {
-    ngModule.directive('smgSheet', function (DataSource, $firebaseArray) {
+    ngModule.directive('smgSheet', function (DataSource, $firebaseArray, UserFactory) {
         return {
             restrict: 'E',
             scope: {},
@@ -14,12 +14,14 @@ module.exports = function (ngModule) {
                 var ref = DataSource.createConnection('/Sheets');
                 vm.sheets = $firebaseArray(ref);
 
-                vm.sheets.$add({
-                    title: 'Poop',
-                    content: 'aaaa'
+                UserFactory.createUser({
+                    username: 'poop',
+                    email: 'head@mee.com',
+                    password: 'margharita',
+                    extra: 'poopie pants'
                 });
 
-
+                console.log('in here');
             }
         }
     });

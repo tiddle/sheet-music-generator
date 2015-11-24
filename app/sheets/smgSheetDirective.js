@@ -16,6 +16,7 @@ module.exports = function (ngModule) {
 
                 UserFactory.createUser({
                     username: 'poop',
+                    id: 'carlocruz',
                     email: 'head@mee.com',
                     password: 'margharita',
                     extra: 'poopie pants'

@@ -8,6 +8,5 @@ var smg = angular.module('smg.authentication', [
 ]);
 
 module.exports = function (smg) {
-    console.log('in here');
     require('./AuthenticationFactory')(smg);
 };

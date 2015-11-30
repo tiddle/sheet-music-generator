@@ -1,5 +1,5 @@
 module.exports = function (ngModule) {
-    ngModule.factory('UserFactory', function ($firebaseObject, $firebaseArray, DataSource, Authentication) {
+    ngModule.factory('User', function ($firebaseObject, $firebaseArray, DataSource, Authentication) {
         var Service = {
             createUser: createUser,
             getUser: getUser
@@ -15,6 +15,8 @@ module.exports = function (ngModule) {
                 var userList = $firebaseObject(ref);
 
                 var output = angular.extend(userList, userDetails);
+                output.email = null;
+                output.id = response.uid;
                 return userList.$save(output).then(function(response) {
                     return response;
                 }, function(error) {

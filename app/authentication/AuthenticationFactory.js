@@ -1,9 +1,14 @@
 module.exports = function (ngModule) {
     ngModule.factory('Authentication', function (DataSource, $firebaseAuth) {
-        console.log('in here');
         var Service = {
             createUser: createUser,
-            login: login
+            login: login,
+            getCurrentUser: getCurrentUser,
+            setCurrentUser: setCurrentUser
+        };
+
+        var currentUser = {
+            auth: false
         };
 
         function createUser(email, password) {
@@ -16,18 +21,29 @@ module.exports = function (ngModule) {
         }
 
         function login(email, password) {
-            var ref = DataSource.createConnection();
-            ref.authWithPassword({
+            var ref = $firebaseAuth(DataSource.createConnection());
+
+            return ref.$authWithPassword({
                 email: email,
                 password: password
-            }, function(error, authData) {
-                if(error) {
-                    console.log(error);
-                } else {
-                    console.log('in here', authData);
-                    return authData;
-                }
-            })
+            }).then(function (data) {
+                DataSource.createConnection('/users')
+                    .startAt('poop')
+                    .once('value', function(data) {
+                        console.log(data.val());
+                    })
+                setCurrentUser(data);
+                return data;
+            });
+        }
+
+        function setCurrentUser(auth) {
+            currentUser.auth = auth;
+            return currentUser;
+        }
+
+        function getCurrentUser() {
+            return currentUser;
         }
 
         return Service;

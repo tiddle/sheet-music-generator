@@ -17,6 +17,7 @@ module.exports = function (ngModule) {
                 var output = angular.extend(userList, userDetails);
                 output.email = null;
                 output.id = response.uid;
+                output.$priority = userDetails.username;
                 return userList.$save(output).then(function(response) {
                     return response;
                 }, function(error) {

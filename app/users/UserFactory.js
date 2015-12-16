@@ -11,13 +11,13 @@ module.exports = function (ngModule) {
          */
         function createUser(userDetails) {
             return Authentication.createUser(userDetails.email, userDetails.password).then(function(response) {
-                var ref = DataSource.createConnection('/users/'+userDetails.id);
+                var ref = DataSource.createConnection('/users/'+userDetails.username);
                 var userList = $firebaseObject(ref);
 
                 var output = angular.extend(userList, userDetails);
                 output.email = null;
                 output.id = response.uid;
-                output.$priority = userDetails.username;
+                output.$priority = response.uid;
                 return userList.$save(output).then(function(response) {
                     return response;
                 }, function(error) {

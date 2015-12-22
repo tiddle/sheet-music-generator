@@ -1,5 +1,5 @@
 module.exports = function (ngModule) {
-    ngModule.factory('User', function ($firebaseObject, $firebaseArray, DataSource, Authentication) {
+    ngModule.factory('User', function ($firebaseObject, $firebaseArray, $q, DataSource, Authentication) {
         var Service = {
             createUser: createUser,
             getUser: getUser
@@ -11,13 +11,14 @@ module.exports = function (ngModule) {
          */
         function createUser(userDetails) {
             return Authentication.createUser(userDetails.email, userDetails.password).then(function(response) {
-                var ref = DataSource.createConnection('/users/'+userDetails.id);
+                var ref = DataSource.createConnection('/users/'+userDetails.username);
                 var userList = $firebaseObject(ref);
 
                 var output = angular.extend(userList, userDetails);
                 output.email = null;
                 output.id = response.uid;
-                output.$priority = userDetails.username;
+                output.$priority = userDetails.uid;
+
                 return userList.$save(output).then(function(response) {
                     return response;
                 }, function(error) {
@@ -31,7 +32,11 @@ module.exports = function (ngModule) {
          * @returns {*}
          */
         function getUser(username) {
-            return DataSource.createConnection('/users/'+username);
+            var deferred = $q.defer();
+            var ref = DataSource.createConnection('/users/'+username);
+            var userList = $firebaseObject(ref);
+            deferred.resolve(userList);
+            return deferred.promise;
         }
 
         return Service;

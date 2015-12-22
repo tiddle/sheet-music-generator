@@ -12,13 +12,6 @@ module.exports = function (ngModule) {
             return connection;
         }
 
-        function testEntry() {
-            var connection = createConnection();
-
-            var p = $firebaseObject(connection);
-            p.foo = 'bar';
-        }
-
         return Service;
     });
 };

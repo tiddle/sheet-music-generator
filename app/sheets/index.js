@@ -8,6 +8,5 @@ var smg = angular.module('smg.sheets', [
 ]);
 
 module.exports = function (smg) {
-    console.log('in here');
     require('./smgSheetDirective')(smg);
 };

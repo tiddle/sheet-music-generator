@@ -7,12 +7,10 @@ module.exports = function (ngModule) {
         restrict: 'E',
         scope: {},
         bindToController: true,
-        templateUrl: 'notes/smg-note.html',
+        templateUrl: 'notes/smgNote.html',
         controllerAs: 'vm',
         controller: function() {
             var vm = this;
-            console.log('in here');
-            console.log(Authentication);
             vm.greeting = 'In Here......... weeeeeeeeeeeeeeeeee!';
         }
     }

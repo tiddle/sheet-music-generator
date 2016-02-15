@@ -13,6 +13,7 @@ module.exports = function (ngModule) {
                 var vm = this;
                 var ref = DataSource.createConnection('/Sheets');
                 vm.sheets = $firebaseArray(ref);
+                vm.notes = 'poop';
             }
         }
     });

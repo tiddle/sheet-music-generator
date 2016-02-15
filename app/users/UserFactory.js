@@ -1,5 +1,5 @@
 module.exports = function (ngModule) {
-    ngModule.factory('User', function ($firebaseObject, $firebaseArray, $q, DataSource, Authentication) {
+    ngModule.factory('User', function ($firebaseObject, $firebaseArray, DataSource, Authentication) {
         var Service = {
             createUser: createUser,
             getUser: getUser
@@ -19,6 +19,7 @@ module.exports = function (ngModule) {
                 output.id = response.uid;
                 output.$priority = userDetails.uid;
 
+                output.$priority = response.uid;
                 return userList.$save(output).then(function(response) {
                     return response;
                 }, function(error) {

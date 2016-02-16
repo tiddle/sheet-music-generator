@@ -1,7 +1,8 @@
 var angular = require('angular');
 require('firebase');
 require('angularfire');
-require('vextabaa');
+require('script!../node_modules/vextab/releases/vextab-div.js');
+
 var ngModule = angular
     .module('smg', [
         'smg.authentication'

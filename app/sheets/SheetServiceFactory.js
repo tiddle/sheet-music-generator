@@ -1,12 +1,11 @@
 module.exports = function (ngModule) {
-    ngModule.factory('Sheet', function (DataSource) {
+    ngModule.factory('Sheet', function () {
         var Service = {
             createSheet: createSheet
         };
 
         function createSheet() {
-            var ref = DataSource.createConnection('/sheets');
-            
+
         }
 
         return Service;

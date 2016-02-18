@@ -2,7 +2,7 @@
  * Created by Carlo on 09/11/15.
  */
 module.exports = function (ngModule) {
-    ngModule.directive('smgNote', function (Authentication) {
+    ngModule.directive('smgNote', function () {
     return {
         restrict: 'E',
         scope: {},

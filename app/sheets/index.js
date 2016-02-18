@@ -3,9 +3,8 @@
  */
 var angular = require('angular');
 var smg = angular.module('smg.sheets', [
-    'smg.datasource',
     'smg.vexflow',
-    'firebase'
+    'smg.generator',
 ]);
 
 module.exports = function (smg) {

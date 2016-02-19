@@ -11,7 +11,13 @@ module.exports = function (ngModule) {
             output += ' key=' + createKey(['C', 'D']);
             output += ' clef=' + createClef();
             output += ' time=' + createTime()+ '\n';
-            output += '\n notes '+createPhrase();
+            // TODO: automate creation of phrases
+            output += createPhrase();
+            output += createPhrase();
+            output += '\ntabstave notation=true tablature=false clef=none'
+            output += createPhrase();
+            output += createPhrase();
+
             console.log(output);
             return output;
         }
@@ -45,21 +51,24 @@ module.exports = function (ngModule) {
         }
 
         function createPhrase() {
-            // select progression
-            // TODO: automate this with a loop or something
+            // TODO: randomise progression selection
             var selectedProgression = progression[0];
-            var firstChord = chords[numberToLetter(selectedProgression[0])];
-            var secondChord = chords[numberToLetter(selectedProgression[1])];
-            var thirdChord = chords[numberToLetter(selectedProgression[2])];
-            var fourthChord = chords[numberToLetter(selectedProgression[3])];
+            var notes = selectedProgression.map(function(chord) {
+                return chords[numberToLetter(chord)];
+            });
 
-            var bars = firstChord[randomNumber(0, 2)]+'-'+firstChord[randomNumber(0, 2)]+'-';
-            bars += secondChord[randomNumber(0, 2)]+'-'+secondChord[randomNumber(0, 2)] + '/4 | ';
-            bars += thirdChord[randomNumber(0, 2)]+'-'+thirdChord[randomNumber(0, 2)]+'-';
-            bars += fourthChord[randomNumber(0, 2)]+'-'+fourthChord[randomNumber(0, 2)] + '/4 | ';
+            var bars = '';
+            for(var i = 0, length = notes.length; i < length; i++) {
+                bars += notes[i][randomNumber(0, 2)]+ '-' + notes[i][randomNumber(0, 2)];
+                if(i % 2 === 1 && i !== 0) {
+                    bars += '/5 | ';
+                }
+                if(i % 2 === 0 || i === 0) {
+                    bars += '-';
+                }
+            }
 
-            return bars.toUpperCase() + bars.toUpperCase();
-
+            return '\n notes '+bars.toUpperCase();
         }
 
         var progression = [

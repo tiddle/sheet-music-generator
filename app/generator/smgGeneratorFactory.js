@@ -61,15 +61,20 @@ module.exports = function (ngModule) {
 
             var bars = '';
             for(var i = 0, length = notes.length; i < length; i++) {
-                bars += createBeatNotes(1, notes[i]);
-                bars += createBeatNotes(1, notes[i]);
-                bars += createBeatNotes(1, notes[i]);
-                bars += createBeatNotes(1, notes[i]);
-
+                bars += createBar(4, notes[i]);
                 bars += ' | ';
             }
 
-            return '\n notes '+bars.toUpperCase();
+            return '\n notes '+bars;
+        }
+
+        function createBar(beatsInBar, notes) {
+            var output = '';
+            for(var i = 0; i < beatsInBar; i++) {
+                output += createBeatNotes(1, notes);
+            }
+
+            return output;
         }
 
         function createBeatNotes(beatLength, notes) {
@@ -77,14 +82,33 @@ module.exports = function (ngModule) {
             var output = '';
 
             var notesToMake = randomNumber(1, 4);
+            output += durationOutput(notesToMake);
+            // Create notes based on random notes to make
+            for(var i = 0; i < notesToMake; i++) {
+                output += notes[randomNumber(0, 2)].toUpperCase();
 
-            if(notesToMake === 2) {
-                output += ':8 ';
+                if(i !== notesToMake-1) {
+                    output += '-';
+                }
             }
-            output += notes[randomNumber(0, 2)]+'-'+notes[randomNumber(0, 2)];
-            output += '/5';
+            output += randomNumber(0, 1) ? '/5 ' : ' /4 ';
+
+            if(notesToMake === 3) {
+                output += ' ^3^ ';
+            }
 
             return output;
+        }
+
+        function durationOutput(notesToMake) {
+            var durations = {
+                1: ':q ',
+                2: ':8 ',
+                3: ':8 ',
+                4: ':16 '
+            };
+
+            return durations[notesToMake];
         }
 
         var progression = [

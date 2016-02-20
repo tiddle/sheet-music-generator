@@ -1,3 +1,7 @@
+/**
+ * Music Generator
+ * @param ngModule
+ */
 module.exports = function (ngModule) {
     ngModule.factory('Generator', function () {
         var Service = {
@@ -13,9 +17,7 @@ module.exports = function (ngModule) {
             output += ' time=' + createTime()+ '\n';
             // TODO: automate creation of phrases
             output += createPhrase();
-            output += createPhrase();
             output += '\ntabstave notation=true tablature=false clef=none'
-            output += createPhrase();
             output += createPhrase();
 
             console.log(output);
@@ -59,16 +61,30 @@ module.exports = function (ngModule) {
 
             var bars = '';
             for(var i = 0, length = notes.length; i < length; i++) {
-                bars += notes[i][randomNumber(0, 2)]+ '-' + notes[i][randomNumber(0, 2)];
-                if(i % 2 === 1 && i !== 0) {
-                    bars += '/5 | ';
-                }
-                if(i % 2 === 0 || i === 0) {
-                    bars += '-';
-                }
+                bars += createBeatNotes(1, notes[i]);
+                bars += createBeatNotes(1, notes[i]);
+                bars += createBeatNotes(1, notes[i]);
+                bars += createBeatNotes(1, notes[i]);
+
+                bars += ' | ';
             }
 
             return '\n notes '+bars.toUpperCase();
+        }
+
+        function createBeatNotes(beatLength, notes) {
+            // For now beatLength is always 1
+            var output = '';
+
+            var notesToMake = randomNumber(1, 4);
+
+            if(notesToMake === 2) {
+                output += ':8 ';
+            }
+            output += notes[randomNumber(0, 2)]+'-'+notes[randomNumber(0, 2)];
+            output += '/5';
+
+            return output;
         }
 
         var progression = [

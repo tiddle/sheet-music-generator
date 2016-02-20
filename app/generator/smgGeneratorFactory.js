@@ -45,11 +45,16 @@ module.exports = function (ngModule) {
             return '4/4';
         }
 
-        function randomNumber(min, max) {
+        function randomNumber(min, max, exclude) {
             var minNum = (min || 0);
             var maxNum = (max || 0);
 
-            return Math.floor(Math.random() * (maxNum - minNum + 1)) + min;
+            result = Math.floor(Math.random() * (maxNum - minNum + 1)) + min;
+            if((exclude || []).indexOf(result) !== -1) {
+                result = randomNumber(min, max, exclude);
+            }
+
+            return result;
         }
 
         function createPhrase() {
@@ -70,29 +75,52 @@ module.exports = function (ngModule) {
 
         function createBar(beatsInBar, notes) {
             var output = '';
-            for(var i = 0; i < beatsInBar; i++) {
-                output += createBeatNotes(1, notes);
+            var beatsLeft = beatsInBar;
+            while(beatsLeft > 0) {
+                var noteDuration = randomNumber(1, beatsLeft, [3]);
+                beatsLeft = beatsLeft - noteDuration;
+                if(noteDuration > 1) {
+                    output += createMultiBeatNote(noteDuration, notes);
+                } else {
+                    output += createBeatNotes(notes);
+                }
             }
-
             return output;
         }
 
-        function createBeatNotes(beatLength, notes) {
+        function createMultiBeatNote(duration, notes) {
+            var output = '';
+            var octave = randomNumber(0, 1) ? '/4 ' : '/5 ';
+            if(duration === 2) {
+                output += ':h ';
+            }
+
+            if(duration === 3) {
+                output += ':h ';
+            }
+
+            if(duration === 4) {
+                output += ':w ';
+            }
+
+            return output + notes[randomNumber(0, 2)].toUpperCase() + octave;
+        }
+
+        function createBeatNotes(notes) {
             // For now beatLength is always 1
             var output = '';
 
-            var notesToMake = randomNumber(1, 4);
-            output += durationOutput(notesToMake);
+            // Avoiding 16th notes for now, too hard
+            var notesToMake = randomNumber(1, 3);
+            var octave = randomNumber(0, 1) ? '/4 ' : ' /5 ';
+            output += oneBeatOutput(notesToMake);
             // Create notes based on random notes to make
             for(var i = 0; i < notesToMake; i++) {
                 output += notes[randomNumber(0, 2)].toUpperCase();
-
-                if(i !== notesToMake-1) {
-                    output += '-';
-                }
+                output += octave;
             }
-            output += randomNumber(0, 1) ? '/5 ' : ' /4 ';
 
+            // Triplets
             if(notesToMake === 3) {
                 output += ' ^3^ ';
             }
@@ -100,15 +128,15 @@ module.exports = function (ngModule) {
             return output;
         }
 
-        function durationOutput(notesToMake) {
-            var durations = {
+        function oneBeatOutput(notesToMake) {
+            var beat = {
                 1: ':q ',
                 2: ':8 ',
                 3: ':8 ',
                 4: ':16 '
             };
 
-            return durations[notesToMake];
+            return beat[notesToMake];
         }
 
         var progression = [

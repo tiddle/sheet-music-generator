@@ -113,15 +113,22 @@ module.exports = function (ngModule) {
             // Avoiding 16th notes for now, too hard
             var notesToMake = randomNumber(1, 3);
             var octave = randomNumber(0, 1) ? '/4 ' : ' /5 ';
+            var isRest = randomNumber(1, 5) === 1 ? true : false;
             output += oneBeatOutput(notesToMake);
-            // Create notes based on random notes to make
-            for(var i = 0; i < notesToMake; i++) {
-                output += notes[randomNumber(0, 2)].toUpperCase();
-                output += octave;
+
+            if(isRest) {
+               // rests
+                output += ' ## ';
+            } else {
+                // Create notes based on random notes to make
+                for(var i = 0; i < notesToMake; i++) {
+                    output += notes[randomNumber(0, 2)].toUpperCase();
+                    output += octave;
+                }
             }
 
             // Triplets
-            if(notesToMake === 3) {
+            if(notesToMake === 3 && !isRest) {
                 output += ' ^3^ ';
             }
 

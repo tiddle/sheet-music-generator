@@ -17,8 +17,19 @@ module.exports = function (ngModule) {
             output += ' time=' + createTime()+ '\n';
             // TODO: automate creation of phrases
             output += createPhrase();
+            output += '\n text|#coda'
+            output += '\ntabstave notation=true tablature=false clef=none'
+            output += createPhrase(true);
             output += '\ntabstave notation=true tablature=false clef=none'
             output += createPhrase();
+            output += '\ntabstave notation=true tablature=false clef=none'
+            output += createPhrase();
+            output += '\n text :w,.1, , | ';
+            output += '\n text :w,.1, , | ';
+            output += '\n text :w,.1, , | ';
+            output += '\n text :w,.1, , | ';
+            output += '\n text :w,.1,#coda, | ';
+
 
             console.log(output);
             return output;
@@ -57,7 +68,7 @@ module.exports = function (ngModule) {
             return result;
         }
 
-        function createPhrase() {
+        function createPhrase(repeat) {
             // TODO: randomise progression selection
             var selectedProgression = progression[0];
             var notes = selectedProgression.map(function(chord) {
@@ -68,6 +79,13 @@ module.exports = function (ngModule) {
             for(var i = 0, length = notes.length; i < length; i++) {
                 bars += createBar(4, notes[i]);
                 bars += ' | ';
+            }
+
+            if(repeat) {
+                console.log(bars);
+                bars.substring(0, bars.length-6);
+                bars += ' =:|';
+
             }
 
             return '\n notes '+bars;
@@ -118,7 +136,7 @@ module.exports = function (ngModule) {
 
             if(isRest) {
                // rests
-                output += ' ## ';
+                output += ':q ## ';
             } else {
                 // Create notes based on random notes to make
                 for(var i = 0; i < notesToMake; i++) {

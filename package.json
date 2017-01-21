@@ -1,32 +1,19 @@
 {
   "name": "sheet-music-generator",
-  "version": "0.0.1a",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --content-base app --inline --hot"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/tiddle/sheet-music-generator.git"
-  },
-  "author": "Carlo Cruz <me@carlocruz.com>",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/tiddle/sheet-music-generator/issues"
-  },
-  "homepage": "https://github.com/tiddle/sheet-music-generator#readme",
-  "dependencies": {
-    "angular": "^1.4.8",
-    "vextab": "^2.0.10"
-  },
+  "version": "0.1.0",
+  "private": true,
   "devDependencies": {
-    "babel": "^6.0.15",
-    "jshint": "^2.8.0",
-    "script-loader": "^0.6.1",
-    "webpack": "^1.12.3",
-    "webpack-core": "^0.6.8",
-    "webpack-dev-server": "^1.12.1"
+    "react-scripts": "0.8.5"
+  },
+  "dependencies": {
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "vextab": "^2.0.13"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
   }
 }

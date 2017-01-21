@@ -14,5 +14,6 @@ For people who want to practice their sight reading ability. Generates sheet mus
 
 ## Built with
 
-* Angular 1.x
+* ReactJS
+* Vexflow
 * Webpack

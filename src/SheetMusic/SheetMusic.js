@@ -6,12 +6,10 @@ class SheetMusic extends Component {
     constructor(props) {
         super(props);
         this.MusicGenerator = new MusicGenerator();
-        this.element = <div>Meow</div>;
     }
 
     componentDidMount() {
         this.sheetMusic = this.MusicGenerator.createMusic();
-        console.log(this.sheetMusic);
 
         let VexTab = vextab.VexTab;
         let Artist = vextab.Artist;
@@ -22,12 +20,9 @@ class SheetMusic extends Component {
         let vextabOutput = new VexTab(artist);
         vextabOutput.parse(this.sheetMusic);
         let output = artist.render(render);
-
-        
     }
 
     render() {
-        console.log(this.element);
         return this.element;
     }
 }

@@ -28,7 +28,7 @@ const MusicGenerator = () => {
         var output = 'tabstave notation=true tablature=false';
         output += ' key=' + createKey(['C', 'D']);
         output += ' clef=' + createClef();
-        output += ' time=' + createTime()+ '\n';
+        output += ' time=' + createTime() + '\n';
         // TODO: automate creation of phrases
         output += createPhrase();
         output += '\n text|#coda'
@@ -44,7 +44,6 @@ const MusicGenerator = () => {
         output += '\n text :w,.1, , | ';
         output += '\n text :w,.1,#coda, | ';
 
-        console.log(output);
         return output;
     }
 
@@ -55,7 +54,7 @@ const MusicGenerator = () => {
             'D#m', 'C#', 'A#m'];
         var availableKeys = (selectedKeys || keys);
 
-        currentAttributes.key = availableKeys[randomNumber(0, availableKeys.length-1)];
+        currentAttributes.key = availableKeys[randomNumber(0, availableKeys.length - 1)];
         return currentAttributes.key;
     }
 
@@ -74,43 +73,49 @@ const MusicGenerator = () => {
         var maxNum = (max || 0);
 
         let result = Math.floor(Math.random() * (maxNum - minNum + 1)) + min;
-        if((exclude || []).indexOf(result) !== -1) {
+        if ((exclude || []).indexOf(result) !== -1) {
             result = randomNumber(min, max, exclude);
         }
 
         return result;
     }
 
-    function createPhrase(repeat) {
+    function splitBar(beatsInBar) {
+
+    }
+
+    function createPhrase(beatsInBar, phraseBarLength, repeat) {
         // TODO: randomise progression selection
-        var selectedProgression = progression[0];
-        var notes = selectedProgression.map(function(chord) {
+        const selectedProgression = progression[0];
+
+
+
+        const notes = selectedProgression.map((chord) => {
             return chords[numberToLetter(chord)];
         });
 
-        var bars = '';
-        for(var i = 0, length = notes.length; i < length; i++) {
+        let bars = '';
+        for (let i = 0, length = notes.length; i < length; i++) {
             bars += createBar(4, notes[i]);
             bars += ' | ';
         }
 
-        if(repeat) {
-            console.log(bars);
-            bars.substring(0, bars.length-6);
+        if (repeat) {
+            bars.substring(0, bars.length - 6);
             bars += ' =:|';
 
         }
 
-        return '\n notes '+bars;
+        return '\n notes ' + bars;
     }
 
     function createBar(beatsInBar, notes) {
         var output = '';
         var beatsLeft = beatsInBar;
-        while(beatsLeft > 0) {
+        while (beatsLeft > 0) {
             var noteDuration = randomNumber(1, beatsLeft, [3]);
             beatsLeft -= noteDuration;
-            if(noteDuration > 1) {
+            if (noteDuration > 1) {
                 output += createMultiBeatNote(noteDuration, notes);
             } else {
                 output += createBeatNotes(notes);
@@ -122,15 +127,15 @@ const MusicGenerator = () => {
     function createMultiBeatNote(duration, notes) {
         var output = '';
         var octave = randomNumber(0, 1) ? '/4 ' : '/5 ';
-        if(duration === 2) {
+        if (duration === 2) {
             output += ':h ';
         }
 
-        if(duration === 3) {
+        if (duration === 3) {
             output += ':h ';
         }
 
-        if(duration === 4) {
+        if (duration === 4) {
             output += ':w ';
         }
 
@@ -147,19 +152,19 @@ const MusicGenerator = () => {
         var isRest = randomNumber(1, 5) === 1 ? true : false;
         output += oneBeatOutput(notesToMake);
 
-        if(isRest) {
+        if (isRest) {
             // rests
             output += ':q ## ';
         } else {
             // Create notes based on random notes to make
-            for(var i = 0; i < notesToMake; i++) {
+            for (var i = 0; i < notesToMake; i++) {
                 output += notes[randomNumber(0, 2)].toUpperCase();
                 output += octave;
             }
         }
 
         // Triplets
-        if(notesToMake === 3 && !isRest) {
+        if (notesToMake === 3 && !isRest) {
             output += ' ^3^ ';
         }
 
@@ -179,7 +184,7 @@ const MusicGenerator = () => {
 
 
     function numberToLetter(number) {
-        return String.fromCharCode(97+number);
+        return String.fromCharCode(97 + number);
     }
 
     // function letterToNumber(letter) {

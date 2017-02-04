@@ -1,4 +1,6 @@
-import React, { Component } from 'react';
+import React, {
+    Component
+} from 'react';
 import vextab from 'vextab/releases/vextab-div';
 import MusicGenerator from '../MusicGenerator/MusicGenerator';
 
@@ -16,14 +18,16 @@ class SheetMusic extends Component {
         let Renderer = vextab.Flow.Renderer;
 
         let render = new Renderer(document.getElementById('music'), Renderer.Backends.CANVAS);
-        let artist = new Artist(10, 10, 800, { scale: 1 });
+        let artist = new Artist(10, 10, 800, {
+            scale: 1
+        });
         let vextabOutput = new VexTab(artist);
         vextabOutput.parse(this.sheetMusic);
         let output = artist.render(render);
     }
 
     render() {
-        return this.element;
+        return <div / > ;
     }
 }
 

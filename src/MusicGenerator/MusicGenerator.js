@@ -70,20 +70,6 @@ const MusicGenerator = () => {
         b: ['b', 'd', 'f']
     };
 
-    const scaleCreator = (keyName) => {
-        // Major = R,W,W,H,W,W,W,H
-        return _reorderNotes(keyName).reduce((acc, curr, index) => {
-            let majorNotes = [0, 2, 4, 5, 7, 9, 11, 12];
-
-            if (majorNotes.indexOf(index) !== -1) {
-                acc.push(curr);
-            }
-
-            return acc;
-
-        }, []);
-    };
-
     const _reorderNotes = (keyName) => {
         let splitNotes = notes.reduce((acc, curr) => {
             // Split notes into 2 arrays to combine later
@@ -109,6 +95,19 @@ const MusicGenerator = () => {
         return splitNotes.before.concat(splitNotes.after);
     }
 
+    const scaleCreator = (keyName) => {
+        // Major = R,W,W,H,W,W,W,H
+        return _reorderNotes(keyName).reduce((acc, curr, index) => {
+            let majorNotes = [0, 2, 4, 5, 7, 9, 11, 12];
+
+            if (majorNotes.indexOf(index) !== -1) {
+                acc.push(curr);
+            }
+
+            return acc;
+
+        }, []);
+    };
 
     const selectProgression = (num = false) => {
         if (!num) {
@@ -128,8 +127,7 @@ const MusicGenerator = () => {
         ];
         const availableKeys = (selectedKeys || keys);
 
-        currentAttributes.key = availableKeys[randomNumber(0, availableKeys.length - 1)];
-        return currentAttributes;
+        return availableKeys[randomNumber(0, availableKeys.length - 1)];
     }
 
     function createClef() {
@@ -184,29 +182,27 @@ const MusicGenerator = () => {
         ];
     };
 
-    function createPhrase(beatsInBar, phraseBarLength, repeat) {
+    function createPhrase(beatsInBar, phraseBarLength, keyName, keyNotes, progression) {
         // TODO: randomise progression selection
-        const selectedProgression = progression[0];
+        // TODO: Rewrite this. This is not right.
 
+        console.log(keyNotes, keyName);
 
-
-        const notes = selectedProgression.map((chord) => {
-            return chords[numberToLetter(chord)];
+        let bars = progression.map((curr) => {
+            rotates(keyNotes, curr);
         });
 
-        let bars = '';
-        for (let i = 0, length = notes.length; i < length; i++) {
-            bars += createBar(4, notes[i]);
-            bars += ' | ';
-        }
 
-        if (repeat) {
-            bars.substring(0, bars.length - 6);
-            bars += ' =:|';
+        return '\n notes ';
+    }
 
-        }
+    function createChord(notes, chordNum, type = '7') {
 
-        return '\n notes ' + bars;
+    }
+
+    function rotates(arr, places) {
+        // TODO: Rotate chord to the right place
+        return arr;
     }
 
     function createBar(beatsInBar, notes) {
@@ -287,46 +283,43 @@ const MusicGenerator = () => {
         return String.fromCharCode(97 + number);
     }
 
+    const createSong = (songAttributes) => {
+        var output = 'tabstave notation=true tablature=false';
+        output += ' key=' + songAttributes.key;
+        output += ' clef=' + songAttributes.clef;
+        output += ' time=' + songAttributes.timeSignature + '\n';
+        // TODO: automate creation of phrases
+        output += createPhrase(4, 4, songAttributes.scale.keyName, songAttributes.scale.notes, songAttributes.progression);
+        // output += '\n text|#coda'
+        // output += '\ntabstave notation=true tablature=false clef=none'
+        // output += '\n text :w,.1,#coda, | ';
+
+        return output;
+    };
+
     // function letterToNumber(letter) {
     //     return letter.charCodeAt(0)-97;
     // }
 
     const createMusic = (musicAttributes) => {
-        // var output = 'tabstave notation=true tablature=false';
-        // output += ' key=' + createKey(['C', 'G']);
-        // output += ' clef=' + createClef();
-        // output += ' time=' + createTime() + '\n';
-        // // TODO: automate creation of phrases
-        // output += createPhrase();
-        // output += '\n text|#coda'
-        // output += '\ntabstave notation=true tablature=false clef=none'
-        // output += createPhrase(true);
-        // output += '\ntabstave notation=true tablature=false clef=none'
-        // output += createPhrase();
-        // output += '\ntabstave notation=true tablature=false clef=none'
-        // output += createPhrase();
-        // output += '\n text :w,.1, , | ';
-        // output += '\n text :w,.1, , | ';
-        // output += '\n text :w,.1, , | ';
-        // output += '\n text :w,.1, , | ';
-        // output += '\n text :w,.1,#coda, | ';
-
-        // return output;
-
         currentAttributes = {
             scale: {
-                keyName: 'B',
-                notes: scaleCreator('B')
+                keyName: 'C',
+                notes: scaleCreator('C')
             },
+            timeSignature: createTime(),
+            key: createKey(['C']),
             progression: selectProgression(),
             clef: createClef(),
             mainPattern: createPattern(),
             bridgePattern: createPattern()
         };
 
+        let song = createSong(currentAttributes);
 
+        console.log(song);
 
-        console.log(currentAttributes);
+        return song;
     }
 
     return {

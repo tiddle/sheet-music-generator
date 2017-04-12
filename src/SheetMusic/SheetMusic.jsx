@@ -25,6 +25,8 @@ class SheetMusic extends Component {
         vextabOutput.parse(this.sheetMusic);
         let output = artist.render(render);
 
+        return output;
+
     }
 
     render() {

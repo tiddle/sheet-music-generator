@@ -6,7 +6,7 @@ const MusicGenerator = () => {
 
     let currentAttributes = {};
     // 1, 4, 5 Major
-    // 2, 3, 5 minor
+    // 2, 3, 6 minor
     // 7 Diminished
     let progression = [
         [1, 6, 2, 5], // Pop/rock
@@ -59,16 +59,6 @@ const MusicGenerator = () => {
             flat: 'Ab'
         }
     ];
-
-    let chords = {
-        c: ['c', 'e', 'g'],
-        d: ['d', 'f', 'a'],
-        e: ['e', 'g', 'b'],
-        f: ['f', 'a', 'c'],
-        g: ['g', 'b', 'd'],
-        a: ['a', 'c', 'e'],
-        b: ['b', 'd', 'f']
-    };
 
     const _reorderNotes = (keyName) => {
         let splitNotes = notes.reduce((acc, curr) => {
@@ -149,73 +139,60 @@ const MusicGenerator = () => {
 
         return result;
     }
-    const createPattern = (barAmount = 2) => {
-        return [
-            [{
-                    duration: 1
-                },
-                {
-                    duration: 1
-                },
-                {
-                    duration: 1
-                },
-                {
-                    duration: 1,
-                    rest: true
-                }
-            ],
-            [{
-                    duration: 1
-                },
-                {
-                    duration: 1
-                },
-                {
-                    duration: 1,
-                    rest: true
-                },
-                {
-                    duration: 1
-                }
-            ]
-        ];
-    };
 
-    function createPhrase(beatsInBar, phraseBarLength, keyName, keyNotes, progression) {
-        // TODO: randomise progression selection
-        // TODO: Rewrite this. This is not right.
-
-        console.log(keyNotes, keyName);
-
-        let bars = progression.map((curr) => {
-            rotates(keyNotes, curr);
+    function createPhrase(beatsInBar, keyName, keyNotes, progression) {
+        // Main bit is here
+        // TODO: Create a duration so that it's not 1 chord per bar
+        // TODO: Turn this into duration base first, then apply the notes afterwards
+        let bars = progression.map((curr, index) => {
+            let adjustedScale = rotates(keyNotes, curr - 1);
+            return createChord(adjustedScale);
         });
 
+        let output = bars.reduce((acc, curr) => {
+            acc += createBar(4, curr);
+            return `${acc} | `;
+        }, "");
 
-        return '\n notes ';
+        console.log(output);
+        return '\n notes ' + output;
     }
 
-    function createChord(notes, chordNum, type = '7') {
+    function createChord(notes, chordNum) {
+        // TODO: Handle different chord types
+        // 1-3-5-6 to start with (Major 7th)
+        let basicChord = [1, 3, 5, 6];
+        let output = notes.reduce((acc, curr, index) => {
+            if (basicChord.indexOf(index + 1) !== -1) {
+                acc.push(curr);
+            }
 
+            return acc;
+        }, []);
+
+        return output;
     }
 
     function rotates(arr, places) {
-        // TODO: Rotate chord to the right place
-        return arr;
+        let newArr = arr.map(e => e); // duplicate for modification
+        let removedNotes = newArr.splice(0, places);
+
+        let output = newArr.concat(removedNotes);
+        return output;
     }
 
-    function createBar(beatsInBar, notes) {
+    function createBar(beatsInBar, notesArr) {
         var output = '';
         var beatsLeft = beatsInBar;
         while (beatsLeft > 0) {
-            var noteDuration = randomNumber(1, beatsLeft, [3]);
+            let noteDuration = 1;
+            // var noteDuration = randomNumber(1, beatsLeft, [3]);
             beatsLeft -= noteDuration;
-            if (noteDuration > 1) {
-                output += createMultiBeatNote(noteDuration, notes);
-            } else {
-                output += createBeatNotes(notes);
-            }
+            // if (noteDuration > 1) {
+            // output += createMultiBeatNote(noteDuration, notesArr);
+            // } else {
+            output += createBeatNotes(notesArr);
+            // }
         }
         return output;
     }
@@ -235,7 +212,7 @@ const MusicGenerator = () => {
             output += ':w ';
         }
 
-        return output + notes[randomNumber(0, 2)].toUpperCase() + octave;
+        return output + notes[randomNumber(0, notes.length - 1)].name + octave;
     }
 
     function createBeatNotes(notes) {
@@ -254,7 +231,7 @@ const MusicGenerator = () => {
         } else {
             // Create notes based on random notes to make
             for (var i = 0; i < notesToMake; i++) {
-                output += notes[randomNumber(0, 2)].toUpperCase();
+                output += notes[randomNumber(0, notes.length - 1)].name;
                 output += octave;
             }
         }
@@ -278,20 +255,20 @@ const MusicGenerator = () => {
         return beat[notesToMake];
     }
 
-
-    function numberToLetter(number) {
-        return String.fromCharCode(97 + number);
-    }
-
     const createSong = (songAttributes) => {
         var output = 'tabstave notation=true tablature=false';
         output += ' key=' + songAttributes.key;
         output += ' clef=' + songAttributes.clef;
         output += ' time=' + songAttributes.timeSignature + '\n';
         // TODO: automate creation of phrases
-        output += createPhrase(4, 4, songAttributes.scale.keyName, songAttributes.scale.notes, songAttributes.progression);
+        output += createPhrase(4, songAttributes.scale.keyName, songAttributes.scale.notes, songAttributes.progression);
+        output += '\ntabstave notation=true tablature=false clef=none'
+        output += createPhrase(4, songAttributes.scale.keyName, songAttributes.scale.notes, songAttributes.progression);
+        output += '\ntabstave notation=true tablature=false clef=none'
+        output += createPhrase(4, songAttributes.scale.keyName, songAttributes.scale.notes, songAttributes.progression);
+        output += '\ntabstave notation=true tablature=false clef=none'
+        output += createPhrase(4, songAttributes.scale.keyName, songAttributes.scale.notes, songAttributes.progression);
         // output += '\n text|#coda'
-        // output += '\ntabstave notation=true tablature=false clef=none'
         // output += '\n text :w,.1,#coda, | ';
 
         return output;
@@ -309,16 +286,12 @@ const MusicGenerator = () => {
             },
             timeSignature: createTime(),
             key: createKey(['C']),
-            progression: selectProgression(),
-            clef: createClef(),
-            mainPattern: createPattern(),
-            bridgePattern: createPattern()
+            progression: selectProgression(0),
+            clef: createClef()
         };
 
+        console.log(currentAttributes);
         let song = createSong(currentAttributes);
-
-        console.log(song);
-
         return song;
     }
 

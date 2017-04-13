@@ -140,14 +140,97 @@ const MusicGenerator = () => {
         return result;
     }
 
-    function createPhrase(beatsInBar, keyName, keyNotes, progression) {
+
+    function selectNoteDuration(durationArr, notLongerThan) {
+        const validChoices = durationArr.reduce((acc, curr) => {
+            if(curr <= notLongerThan) {
+                acc.push(curr);
+            }
+
+            return acc;
+        }, []);
+
+        return validChoices[randomNumber(0, validChoices.length-1)];
+    }
+
+    function createBarDuration(beats) {
+        const choices = [0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 4];
+
+        let output = [];
+        while(beats > 0) {
+            let currNote = {};
+            let duration = selectNoteDuration(choices, beats);
+
+            if(duration === 1) {
+                currNote.isTriplet = randomNumber(0, 1) === 0;
+            }
+
+            currNote.duration = duration;
+            currNote.isRest = randomNumber(0, 4) === 0;
+            
+            output.push(currNote);
+            
+            beats -= duration;
+        }
+
+        return output;
+    }
+
+    function createDurationPhrase(beatsInBar, amountOfBars) {
+        let output = [];
+
+        while(amountOfBars > 0) {
+            amountOfBars--;
+            output.push(createBarDuration(beatsInBar));
+        }
+
+        return output;
+    }
+
+    function calculateChordChangeInterval(amountOfBars, progressionArr) {
+        // TODO: Handle when amountOfBars > progressionArr
+        let extraChords = progressionArr.length%amountOfBars;
+
+        let output = [];
+        for(let i = 0; i < amountOfBars; i++) {
+            let bar = [];
+            if(extraChords > 0 && i === 0) {
+                if(randomNumber(0, 1) === 0) {
+                    bar.push(progressionArr.pop());
+                    extraChords = 0;
+                }
+            }
+
+            if(extraChords > 0 && i === amountOfBars-1) {
+                console.log('in here');
+                bar.push(progressionArr.pop());
+            }
+
+            bar.push(progressionArr.pop());
+            output.push(bar);
+        }
+
+        return output;
+    }
+
+    function createPhrase(beatsInBar, phraseBarDuration, keyName, keyNotes, progression) {
         // Main bit is here
         // TODO: Create a duration so that it's not 1 chord per bar
         // TODO: Turn this into duration base first, then apply the notes afterwards
+        
+        const durationPhrase = createDurationPhrase(beatsInBar, phraseBarDuration);
+
+        let phrase = durationPhrase.reduce((acc, curr) => {
+
+        }, []);
+
+        
         let bars = progression.map((curr, index) => {
             let adjustedScale = rotates(keyNotes, curr - 1);
             return createChord(adjustedScale);
         });
+
+        console.log(calculateChordChangeInterval(3, bars));
 
         let output = bars.reduce((acc, curr) => {
             acc += createBar(4, curr);
@@ -261,13 +344,7 @@ const MusicGenerator = () => {
         output += ' clef=' + songAttributes.clef;
         output += ' time=' + songAttributes.timeSignature + '\n';
         // TODO: automate creation of phrases
-        output += createPhrase(4, songAttributes.scale.keyName, songAttributes.scale.notes, songAttributes.progression);
-        output += '\ntabstave notation=true tablature=false clef=none'
-        output += createPhrase(4, songAttributes.scale.keyName, songAttributes.scale.notes, songAttributes.progression);
-        output += '\ntabstave notation=true tablature=false clef=none'
-        output += createPhrase(4, songAttributes.scale.keyName, songAttributes.scale.notes, songAttributes.progression);
-        output += '\ntabstave notation=true tablature=false clef=none'
-        output += createPhrase(4, songAttributes.scale.keyName, songAttributes.scale.notes, songAttributes.progression);
+        output += createPhrase(4, 3, songAttributes.scale.keyName, songAttributes.scale.notes, songAttributes.progression);
         // output += '\n text|#coda'
         // output += '\n text :w,.1,#coda, | ';
 

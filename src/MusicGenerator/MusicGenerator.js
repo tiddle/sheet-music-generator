@@ -142,7 +142,7 @@ const MusicGenerator = () => {
 
 
     function selectNoteDuration(durationArr, notLongerThan) {
-        const validChoices = durationArr.reduce((acc, curr) => {
+        let validChoices = durationArr.reduce((acc, curr) => {
             if(curr <= notLongerThan) {
                 acc.push(curr);
             }
@@ -150,23 +150,30 @@ const MusicGenerator = () => {
             return acc;
         }, []);
 
+        // Fix for odd counts
+        if(validChoices.length === 0) {
+            validChoices = [0.25];
+        }
+
         return validChoices[randomNumber(0, validChoices.length-1)];
     }
 
     function createBarDuration(beats) {
-        const choices = [0.25, 0.5, 0.75, 1, 1.5, 2, 2.5, 3, 4];
+        // Removed 0.25, makes the music too hard
+        // Removed 0.75, makes the music generation weird
+        const choices = [0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4];
 
         let output = [];
         while(beats > 0) {
             let currNote = {};
             let duration = selectNoteDuration(choices, beats);
 
-            if(duration === 1) {
-                currNote.isTriplet = randomNumber(0, 1) === 0;
-            }
-
             currNote.duration = duration;
             currNote.isRest = randomNumber(0, 4) === 0;
+
+            if(duration === 1 && !currNote.isRest) {
+                currNote.isTriplet = randomNumber(0, 1) === 0;
+            }
             
             output.push(currNote);
             
@@ -191,6 +198,10 @@ const MusicGenerator = () => {
         // TODO: Handle when amountOfBars > progressionArr
         let extraChords = progressionArr.length%amountOfBars;
 
+        if(amountOfBars/progressionArr.length === 1) {
+            amountOfBars *= 2;
+        }
+
         let output = [];
         for(let i = 0; i < amountOfBars; i++) {
             let bar = [];
@@ -202,7 +213,6 @@ const MusicGenerator = () => {
             }
 
             if(extraChords > 0 && i === amountOfBars-1) {
-                console.log('in here');
                 bar.push(progressionArr.pop());
             }
 
@@ -213,32 +223,78 @@ const MusicGenerator = () => {
         return output;
     }
 
-    function createPhrase(beatsInBar, phraseBarDuration, keyName, keyNotes, progression) {
+    function applyNotesToDuration(durationArr, changeIntervalArr) {
+        return durationArr.reduce((acc, curr, index) => {
+            let currentChord = changeIntervalArr[0];
+            
+            if(changeIntervalArr.length !== 1) {
+                // TODO: this branch
+            }
+
+            if(!curr.isRest) {
+                curr.note = currentChord[randomNumber(0, currentChord.length-1)];
+            }
+
+            acc.push(curr);
+
+            return acc;
+        }, []);
+    }
+
+
+    function createPhrase(beatsInBar, phraseBarDuration, keyNotes, progression) {
         // Main bit is here
         // TODO: Create a duration so that it's not 1 chord per bar
         // TODO: Turn this into duration base first, then apply the notes afterwards
-        
-        const durationPhrase = createDurationPhrase(beatsInBar, phraseBarDuration);
-
-        let phrase = durationPhrase.reduce((acc, curr) => {
-
-        }, []);
-
         
         let bars = progression.map((curr, index) => {
             let adjustedScale = rotates(keyNotes, curr - 1);
             return createChord(adjustedScale);
         });
 
-        console.log(calculateChordChangeInterval(3, bars));
+        const durationPhrase = createDurationPhrase(beatsInBar, phraseBarDuration);
+        const changeInterval = calculateChordChangeInterval(phraseBarDuration, bars);
 
-        let output = bars.reduce((acc, curr) => {
-            acc += createBar(4, curr);
-            return `${acc} | `;
-        }, "");
+        return durationPhrase.reduce((acc, curr, index) => {
+            acc.push({
+                duration: curr,
+                changeInterval: changeInterval[index]
+            })
 
-        console.log(output);
+            return acc;
+        }, []);
+    }
+
+    function createMusicFromPhrase(musicArr) {
+        let phrase = musicArr.reduce((acc, curr) => {
+            acc.push(applyNotesToDuration(curr.duration, curr.changeInterval));
+            return acc;
+        }, []);
+        
+        let output = phrase.reduce((acc, curr) => {
+            acc.push(cleanUpMusicArr(curr));
+
+            return acc;
+        }, []).reduce((acc, curr) => {
+            acc += createBar(curr) + ' | ';
+            return acc;
+        }, '');
+
         return '\n notes ' + output;
+    }
+
+    function cleanUpMusicArr(notesArr) {
+        return notesArr.reduce((acc, curr) => {
+            if(acc.length > 0) {
+                if(acc[acc.length-1].isRest && curr.isRest) {
+                    acc[acc.length-1].duration += curr.duration;
+                    return acc;
+                }
+            }
+
+            acc.push(curr);
+            return acc;
+        }, []);
     }
 
     function createChord(notes, chordNum) {
@@ -264,78 +320,66 @@ const MusicGenerator = () => {
         return output;
     }
 
-    function createBar(beatsInBar, notesArr) {
-        var output = '';
-        var beatsLeft = beatsInBar;
-        while (beatsLeft > 0) {
-            let noteDuration = 1;
-            // var noteDuration = randomNumber(1, beatsLeft, [3]);
-            beatsLeft -= noteDuration;
-            // if (noteDuration > 1) {
-            // output += createMultiBeatNote(noteDuration, notesArr);
-            // } else {
-            output += createBeatNotes(notesArr);
-            // }
-        }
-        return output;
+    function createBar(notesArr) {
+        return notesArr.reduce((acc, curr) => {
+            acc += createBeatNotes(curr);
+            return acc;
+        }, '');
     }
 
-    function createMultiBeatNote(duration, notes) {
-        var output = '';
-        var octave = randomNumber(0, 1) ? '/4 ' : '/5 ';
-        if (duration === 2) {
-            output += ':h ';
-        }
-
-        if (duration === 3) {
-            output += ':h ';
-        }
-
-        if (duration === 4) {
-            output += ':w ';
-        }
-
-        return output + notes[randomNumber(0, notes.length - 1)].name + octave;
-    }
-
-    function createBeatNotes(notes) {
+    function createBeatNotes(note) {
         // For now beatLength is always 1
         var output = '';
 
-        // Avoiding 16th notes for now, too hard
-        var notesToMake = randomNumber(1, 3);
         var octave = randomNumber(0, 1) ? '/4 ' : ' /5 ';
         var isRest = randomNumber(1, 5) === 1 ? true : false;
-        output += oneBeatOutput(notesToMake);
+        output += oneBeatOutput(note.duration);
 
-        if (isRest) {
+        if (note.isRest) {
             // rests
-            output += ':q ## ';
+            output += ' ## ';
         } else {
-            // Create notes based on random notes to make
-            for (var i = 0; i < notesToMake; i++) {
-                output += notes[randomNumber(0, notes.length - 1)].name;
-                output += octave;
-            }
+            output += ` ${note.note.name} ${octave}`;
         }
 
-        // Triplets
-        if (notesToMake === 3 && !isRest) {
-            output += ' ^3^ ';
-        }
+        // // Triplets
+        // if (notesToMake === 3 && !isRest) {
+        //     output += ' ^3^ ';
+        // }
 
         return output;
     }
 
-    function oneBeatOutput(notesToMake) {
-        var beat = {
-            1: ':q ',
-            2: ':8 ',
-            3: ':8 ',
-            4: ':16 '
-        };
+    function oneBeatOutput(duration) {
+        let output = '';
+        switch(duration) {
+            case 0.25: 
+                output = ':16';
+            break;
+            case 0.5:
+                output = ':8';
+            break;
+            case 0.75:
+                output = ':8d';
+            break;
+            case 1:
+                output = ':4';
+            break;
+            case 1.5:
+                output = ':4d';
+            break;
+            case 2:
+                output = ':2';
+            break;
+            case 3:
+                output = ':2d';
+            break;
+            case 4:
+                output = ':1';
+            break;
+        }
 
-        return beat[notesToMake];
+        return output;
     }
 
     const createSong = (songAttributes) => {
@@ -344,7 +388,18 @@ const MusicGenerator = () => {
         output += ' clef=' + songAttributes.clef;
         output += ' time=' + songAttributes.timeSignature + '\n';
         // TODO: automate creation of phrases
-        output += createPhrase(4, 3, songAttributes.scale.keyName, songAttributes.scale.notes, songAttributes.progression);
+        // output += createPhrase(4, 3, songAttributes.scale.keyName, songAttributes.scale.notes, songAttributes.progression);
+        output += createMusicFromPhrase(songAttributes.mainPhrase);
+        output += '\ntabstave notation=true tablature=false clef=none';
+        output += createMusicFromPhrase(songAttributes.mainPhrase);
+        output += '\ntabstave notation=true tablature=false clef=none';
+        output += createMusicFromPhrase(songAttributes.mainPhrase);
+        output += '\ntabstave notation=true tablature=false clef=none';
+        output += createMusicFromPhrase(songAttributes.mainPhrase);
+        output += '\ntabstave notation=true tablature=false clef=none';
+        output += createMusicFromPhrase(songAttributes.mainPhrase);
+        output += '\ntabstave notation=true tablature=false clef=none';
+        output += createMusicFromPhrase(songAttributes.mainPhrase);
         // output += '\n text|#coda'
         // output += '\n text :w,.1,#coda, | ';
 
@@ -366,6 +421,8 @@ const MusicGenerator = () => {
             progression: selectProgression(0),
             clef: createClef()
         };
+
+        currentAttributes.mainPhrase = createPhrase(4, 4, currentAttributes.scale.notes, currentAttributes.progression);
 
         console.log(currentAttributes);
         let song = createSong(currentAttributes);

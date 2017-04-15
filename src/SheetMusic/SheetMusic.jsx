@@ -11,7 +11,9 @@ class SheetMusic extends Component {
     }
 
     componentDidMount() {
-        this.sheetMusic = this.MusicGenerator.createMusic();
+        let musicAttr = this.MusicGenerator.createMusicAttr();
+        this.props.setMusicAttributes(musicAttr);
+        this.sheetMusic = this.MusicGenerator.createSong(musicAttr);
 
         let VexTab = vextab.VexTab;
         let Artist = vextab.Artist;
@@ -33,5 +35,9 @@ class SheetMusic extends Component {
         return (<div />);
     }
 }
+
+SheetMusic.propTypes = {
+    setMusicAttributes: React.PropTypes.func.isRequired
+};
 
 export default SheetMusic;

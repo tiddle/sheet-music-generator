@@ -1,3 +1,6 @@
+import VexflowInterface from '../VexflowInterface/VexflowInterface';
+import randomNumber from '../Utilities/RandomNumber';
+
 /**
  * Music Generator
  * @param 
@@ -128,19 +131,6 @@ const MusicGenerator = () => {
         return '4/4';
     }
 
-    function randomNumber(min, max, exclude) {
-        var minNum = (min || 0);
-        var maxNum = (max || 0);
-
-        let result = Math.floor(Math.random() * (maxNum - minNum + 1)) + min;
-        if ((exclude || []).indexOf(result) !== -1) {
-            result = randomNumber(min, max, exclude);
-        }
-
-        return result;
-    }
-
-
     function selectNoteDuration(durationArr, notLongerThan) {
         let validChoices = durationArr.reduce((acc, curr) => {
             if(curr <= notLongerThan) {
@@ -191,6 +181,8 @@ const MusicGenerator = () => {
             output.push(createBarDuration(beatsInBar));
         }
 
+        output = cleanUpMusicArr(output);
+
         return output;
     }
 
@@ -223,23 +215,6 @@ const MusicGenerator = () => {
         return output;
     }
 
-    function applyNotesToDuration(durationArr, changeIntervalArr) {
-        return durationArr.reduce((acc, curr, index) => {
-            let currentChord = changeIntervalArr[0];
-            
-            if(changeIntervalArr.length !== 1) {
-                // TODO: this branch
-            }
-
-            if(!curr.isRest) {
-                curr.note = currentChord[randomNumber(0, currentChord.length-1)];
-            }
-
-            acc.push(curr);
-
-            return acc;
-        }, []);
-    }
 
 
     function createPhrase(beatsInBar, phraseBarDuration, keyNotes, progression) {
@@ -265,23 +240,6 @@ const MusicGenerator = () => {
         }, []);
     }
 
-    function createMusicFromPhrase(musicArr) {
-        let phrase = musicArr.reduce((acc, curr) => {
-            acc.push(applyNotesToDuration(curr.duration, curr.changeInterval));
-            return acc;
-        }, []);
-        
-        let output = phrase.reduce((acc, curr) => {
-            acc.push(cleanUpMusicArr(curr));
-
-            return acc;
-        }, []).reduce((acc, curr) => {
-            acc += createBar(curr) + ' | ';
-            return acc;
-        }, '');
-
-        return '\n notes ' + output;
-    }
 
     function cleanUpMusicArr(notesArr) {
         return notesArr.reduce((acc, curr) => {
@@ -320,71 +278,37 @@ const MusicGenerator = () => {
         return output;
     }
 
-    function createBar(notesArr) {
-        return notesArr.reduce((acc, curr) => {
-            acc += createBeatNotes(curr);
+    const applyNotesToDuration = (durationArr, changeIntervalArr) => {
+        return durationArr.reduce((acc, curr, index) => {
+            let currentChord = changeIntervalArr[0];
+            
+            if(changeIntervalArr.length !== 1) {
+                // TODO: this branch
+            }
+
+            if(!curr.isRest) {
+                curr.note = currentChord[randomNumber(0, currentChord.length-1)];
+            }
+
+            acc.push(curr);
+
             return acc;
-        }, '');
-    }
+        }, []);
+    } 
 
-    function createBeatNotes(note) {
-        // For now beatLength is always 1
-        var output = '';
+    const createMusicFromPhrase = (musicArr) => {
+        let phrase = musicArr.reduce((acc, curr) => {
+            acc.push(applyNotesToDuration(curr.duration, curr.changeInterval));
+            return acc;
+        }, []);
 
-        var octave = randomNumber(0, 1) ? '/4 ' : ' /5 ';
-        var isRest = randomNumber(1, 5) === 1 ? true : false;
-        output += oneBeatOutput(note.duration);
-
-        if (note.isRest) {
-            // rests
-            output += ' ## ';
-        } else {
-            output += ` ${note.note.name} ${octave}`;
-        }
-
-        // // Triplets
-        // if (notesToMake === 3 && !isRest) {
-        //     output += ' ^3^ ';
-        // }
-
-        return output;
-    }
-
-    function oneBeatOutput(duration) {
-        let output = '';
-        switch(duration) {
-            case 0.25: 
-                output = ':16';
-            break;
-            case 0.5:
-                output = ':8';
-            break;
-            case 0.75:
-                output = ':8d';
-            break;
-            case 1:
-                output = ':4';
-            break;
-            case 1.5:
-                output = ':4d';
-            break;
-            case 2:
-                output = ':2';
-            break;
-            case 3:
-                output = ':2d';
-            break;
-            case 4:
-                output = ':1';
-            break;
-        }
-
-        return output;
+        return VexflowInterface.createMusicFromArray(phrase);
+        
     }
 
     const createSong = (songAttributes) => {
         var output = 'tabstave notation=true tablature=false';
-        output += ' key=' + songAttributes.key;
+        output += ' key=' + songAttributes.scale.keyName;
         output += ' clef=' + songAttributes.clef;
         output += ' time=' + songAttributes.timeSignature + '\n';
         // TODO: automate creation of phrases
@@ -410,27 +334,26 @@ const MusicGenerator = () => {
     //     return letter.charCodeAt(0)-97;
     // }
 
-    const createMusic = (musicAttributes) => {
+    const createMusicAttr = (musicAttributes) => {
+        const key = createKey();
         currentAttributes = {
             scale: {
-                keyName: 'C',
-                notes: scaleCreator('C')
+                keyName: key,
+                notes: scaleCreator(key)
             },
             timeSignature: createTime(),
-            key: createKey(['C']),
-            progression: selectProgression(0),
+            progression: selectProgression(),
             clef: createClef()
         };
 
         currentAttributes.mainPhrase = createPhrase(4, 4, currentAttributes.scale.notes, currentAttributes.progression);
 
-        console.log(currentAttributes);
-        let song = createSong(currentAttributes);
-        return song;
+        return currentAttributes;
     }
 
     return {
-        createMusic: createMusic
+        createMusicAttr,
+        createSong
     };
 };
 

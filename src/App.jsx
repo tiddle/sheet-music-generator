@@ -17,7 +17,6 @@ class App extends Component {
   }
 
   setMusicAttributes(attrArr) {
-    console.log(attrArr);
     this.setState({musicAttr: attrArr});
   };
 

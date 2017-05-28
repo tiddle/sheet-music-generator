@@ -1,13 +1,7 @@
 import randomNumber from '../Utilities/RandomNumber';
-
-const createMusicFromArray = (musicArr) => {
-    let output = musicArr.reduce((acc, curr) => {
-        acc += createBar(curr) + ' | ';
-        return acc;
-    }, '');
-
-    return '\n notes ' + output;
-}
+import {
+    createMusicFromPhrase
+} from '../MusicGenerator/Phrase';
 
 const createBar = (notesArr) => {
     return notesArr.reduce((acc, curr) => {
@@ -41,37 +35,67 @@ const createBeatNotes = (note) => {
 
 const oneBeatOutput = (duration) => {
     let output = '';
-    switch(duration) {
-        case 0.25: 
+    switch (duration) {
+        case 0.25:
             output = ':16';
-        break;
+            break;
         case 0.5:
             output = ':8';
-        break;
+            break;
         case 0.75:
             output = ':8d';
-        break;
+            break;
         case 1:
             output = ':4';
-        break;
+            break;
         case 1.5:
             output = ':4d';
-        break;
+            break;
         case 2:
             output = ':2';
-        break;
+            break;
         case 3:
             output = ':2d';
-        break;
+            break;
         case 4:
             output = ':1';
-        break;
+            break;
     }
 
     return output;
 }
 
+export const generateMusicFromObject = (songAttributes) => {
+    let output = 'tabstave notation=true tablature=false';
+    output += ' key=' + songAttributes.scale.keyName;
+    output += ' clef=' + songAttributes.clef;
+    output += ' time=' + songAttributes.timeSignature + '\n';
+    // TODO: automate creation of phrases
+    // output += createPhrase(4, 3, songAttributes.scale.keyName, songAttributes.scale.notes, songAttributes.progression);
+    output += createMusicFromPhrase(songAttributes.mainPhrase);
+    output += '\ntabstave notation=true tablature=false clef=none';
+    output += createMusicFromPhrase(songAttributes.mainPhrase);
+    output += '\ntabstave notation=true tablature=false clef=none';
+    output += createMusicFromPhrase(songAttributes.mainPhrase);
+    output += '\ntabstave notation=true tablature=false clef=none';
+    output += createMusicFromPhrase(songAttributes.mainPhrase);
+    output += '\ntabstave notation=true tablature=false clef=none';
+    output += createMusicFromPhrase(songAttributes.mainPhrase);
+    output += '\ntabstave notation=true tablature=false clef=none';
+    output += createMusicFromPhrase(songAttributes.mainPhrase);
+
+    return output;
+}
+
+export const createMusicFromArray = (musicArr) => {
+    let output = musicArr.reduce((acc, curr) => {
+        acc += createBar(curr) + ' | ';
+        return acc;
+    }, '');
+
+    return '\n notes ' + output;
+}
 
 export default {
-   createMusicFromArray 
+    createMusicFromArray
 };

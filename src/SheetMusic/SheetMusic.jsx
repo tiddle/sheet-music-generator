@@ -7,7 +7,7 @@ import MusicGenerator from '../MusicGenerator/MusicGenerator';
 class SheetMusic extends Component {
     constructor(props) {
         super(props);
-        this.MusicGenerator = new MusicGenerator();
+        this.MusicGenerator = MusicGenerator();
     }
 
     componentDidMount() {

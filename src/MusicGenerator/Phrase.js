@@ -60,8 +60,8 @@ export const createMusicFromPhrase = (musicArr) => {
  */
 export const createChord = (notes, chordNum) => {
     // TODO: Handle different chord types
-    // 1-3-5-6 to start with (Major 7th)
-    let basicChord = [1, 3, 5, 6];
+    // 1-3-5-7 to start with (Major 7th)
+    let basicChord = [1, 3, 5, 7];
     let output = notes.reduce((acc, curr, index) => {
         if (basicChord.indexOf(index + 1) !== -1) {
             acc.push(curr);

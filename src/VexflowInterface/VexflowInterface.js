@@ -3,18 +3,18 @@ import {
     createMusicFromPhrase
 } from '../MusicGenerator/Phrase';
 
-const createBar = (notesArr) => {
+export const createBar = (notesArr) => {
     return notesArr.reduce((acc, curr) => {
         acc += createBeatNotes(curr);
         return acc;
     }, '');
 }
 
-const createBeatNotes = (note) => {
+export const createBeatNotes = (note) => {
     // For now beatLength is always 1
     var output = '';
 
-    var octave = randomNumber(0, 1) ? '/4 ' : ' /5 ';
+    var octave = randomNumber(0, 1) ? '/4 ' : '/5 ';
     var isRest = randomNumber(1, 5) === 1 ? true : false;
     output += oneBeatOutput(note.duration);
 
@@ -33,7 +33,7 @@ const createBeatNotes = (note) => {
     return output;
 }
 
-const oneBeatOutput = (duration) => {
+export const oneBeatOutput = (duration) => {
     let output = '';
     switch (duration) {
         case 0.25:

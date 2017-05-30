@@ -2,6 +2,77 @@
 
 For people who want to practice their sight reading ability. Generates sheet music on the fly so that you can practice sight reading.
 
+## Proposal Object Notation for Music
+
+### Single Note
+```
+{
+    note: 'C',
+    duration: '1',
+    chord: 'C7',
+    isStaccato: true,
+    isTenuto: true,
+    isMarcato: true,
+    isAccent: true,
+    isSlurStart: true
+}
+```
+
+### Music Phrase
+Each array item represents a bar
+```
+[
+    [
+        {
+            note: 'C',
+            duration: '1',
+            chord: 'C7',
+            isSlurStart: true
+        }, 
+        {
+            note: 'E',
+            chord: 'C7',
+            duration: '1'
+        }, 
+        {
+            note: 'G',
+            chord: 'C7',
+            duration: '1'
+        }, 
+        {
+            note: 'B',
+            chord: 'C7',
+            duration: '1',
+            isSlurEnd: true
+        }
+    ],
+    [
+        {
+            note: 'C',
+            chord: 'C7',
+            duration: '1',
+            isSlurStart: true
+        }, 
+        {
+            note: 'E',
+            chord: 'C7',
+            duration: '1'
+        }, 
+        {
+            note: 'G',
+            chord: 'C7',
+            duration: '1'
+        }, 
+        {
+            note: 'B',
+            chord: 'C7',
+            duration: '1',
+            isSlurEnd: true
+        }
+    ]
+]
+```
+
 ## Roadmap
 
 * Better phrasing algorithm

@@ -11,7 +11,9 @@ class SheetMusic extends Component {
     }
 
     componentDidMount() {
-        let musicAttr = this.MusicGenerator.createMusicAttr();
+        let musicAttr = this.MusicGenerator.createMusicAttr({
+            key: 'C'
+        });
         this.props.setMusicAttributes(musicAttr);
         this.sheetMusic = this.MusicGenerator.createSong(musicAttr);
 

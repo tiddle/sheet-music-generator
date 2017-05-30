@@ -51,14 +51,20 @@ const MusicGenerator = () => {
     };
 
     const createMusicAttr = (musicAttributes) => {
-        const key = createKey();
+        const attributes = Object.assign({}, {
+            key: false,
+            timeSignature: false,
+            progression: false
+        }, musicAttributes)
+
+        const key = createKey(attributes.key);
         currentAttributes = {
             scale: {
                 keyName: key,
                 notes: scaleCreator(key)
             },
-            timeSignature: createTime(),
-            progression: selectProgression(),
+            timeSignature: createTime(attributes.timeSignature),
+            progression: selectProgression(attributes.progression),
             clef: createClef()
         };
 

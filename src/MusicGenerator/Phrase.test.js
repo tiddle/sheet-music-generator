@@ -1,7 +1,8 @@
 import {
     rotates,
     createChord,
-    selectNoteDuration
+    selectNoteDuration,
+    cleanUpMusicArr
 } from './Phrase';
 
 describe('Phrase', () => {
@@ -21,4 +22,25 @@ describe('Phrase', () => {
         expect(selectNoteDuration([1, 3], 2)).toEqual(1);
         expect(selectNoteDuration([], 2)).toEqual(0.25);
     })
+
+    describe('method `cleanUpMusicArray`', () => {
+        it('should not return double rests', () => {
+            const positiveResults = [
+                [{
+                    duration: 1,
+                    isRest: true
+                }, {
+                    duration: 1,
+                    isRest: true
+                }]
+            ];
+
+            positiveResults.forEach((noteArray) => {
+                expect(cleanUpMusicArr(noteArray)).toEqual([{
+                    duration: 2,
+                    isRest: true
+                }])
+            });
+        });
+    });
 });

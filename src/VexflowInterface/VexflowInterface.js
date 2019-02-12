@@ -15,7 +15,7 @@ export const createBeatNotes = (note) => {
     var output = '';
 
     var octave = randomNumber(0, 1) ? '/4 ' : '/5 ';
-    var isRest = randomNumber(1, 5) === 1 ? true : false;
+    // var isRest = randomNumber(1, 5) === 1 ? true : false;
     output += oneBeatOutput(note.duration);
 
     if (note.isRest) {
@@ -60,6 +60,7 @@ export const oneBeatOutput = (duration) => {
         case 4:
             output = ':1';
             break;
+        default:
     }
 
     return output;

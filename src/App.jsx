@@ -26,9 +26,8 @@ class App extends React.Component {
 			<div className="App">
 				<h1>Sheet Music Generator</h1>
 				<p>
-					Creates a 4 bar phrase in the key of{' '}
-					{this.state.musicAttr.scale.keyName}. In 6 variations of the
-					same progression.
+					A randomly created song in the key of{' '}
+					{this.state.musicAttr.scale.keyName}.{' '}.
 				</p>
 				<SheetMusic setMusicAttributes={this.setMusicAttributes} />
 			</div>

@@ -10,9 +10,7 @@ class SheetMusic extends React.Component {
 	}
 
 	componentDidMount() {
-		let musicAttr = this.MusicGenerator.createMusicAttr({
-			key: 'C'
-		});
+		let musicAttr = this.MusicGenerator.createMusicAttr();
 		this.props.setMusicAttributes(musicAttr);
 		this.sheetMusic = this.MusicGenerator.createSong(musicAttr);
 
@@ -24,7 +22,7 @@ class SheetMusic extends React.Component {
 			document.getElementById('music'),
 			Renderer.Backends.CANVAS
 		);
-		let artist = new Artist(10, 10, 800, {
+		let artist = new Artist(10, 10, 1024, {
 			scale: 1
 		});
 		let vextabOutput = new VexTab(artist);

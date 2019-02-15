@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "dumper": "^1.0.12",
     "gh-pages": "2.0.1",
     "prop-types": "^15.7.1",
     "react-scripts": "2.1.5"

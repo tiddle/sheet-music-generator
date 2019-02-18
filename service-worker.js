@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/sheet-music-generator/precache-manifest.d8c817c98a9170f5e6c768c51905474b.js"
+  "/sheet-music-generator/precache-manifest.b152133cc34dfc982ec21ae40df193c2.js"
 );
 
 workbox.clientsClaim();

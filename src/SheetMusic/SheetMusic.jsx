@@ -16,6 +16,8 @@ class SheetMusic extends React.Component {
 
 		let VexTab = vextab.VexTab;
 		let Artist = vextab.Artist;
+
+		Artist.NOLOGO = true;
 		let Renderer = vextab.Flow.Renderer;
 
 		let render = new Renderer(

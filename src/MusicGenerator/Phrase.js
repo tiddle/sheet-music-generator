@@ -103,7 +103,7 @@ export const selectNoteDuration = (durationArr, notLongerThan) => {
 export const createBarDuration = beats => {
 	// Removed 0.25, makes the music too hard
 	// Removed 0.75, makes the music generation weird
-	const choices = [0.5, 1, 1.5, 2, 3, 4];
+	const choices = [0.25, 0.5, 1, 1.5, 2, 3, 4];
 
 	let output = [];
 	while (beats > 0) {

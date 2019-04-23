@@ -1,5 +1,7 @@
 # sheet-music-generator
 
+https://github.com/tiddle/sheet-music-generator
+
 For people who want to practice their sight reading ability. Generates sheet music on the fly so that you can practice sight reading.
 
 ## Proposal Object Notation for Music
